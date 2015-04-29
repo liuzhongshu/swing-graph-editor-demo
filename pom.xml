@@ -13,6 +13,16 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
+
+  <repositories>
+ 	<repository>
+        <id>project.local</id>
+        <name>project</name>
+        <url>file:${project.basedir}/repo</url>
+    </repository>
+  </repositories>
+
+        
   <dependencies>
     <dependency>
       <groupId>junit</groupId>
@@ -34,6 +44,7 @@
 		<version>2.0.1</version>
 		<scope>compile</scope>
 	</dependency>
+	
 	<dependency>
 		<groupId>net.sf.jung</groupId>
 		<artifactId>jung-visualization</artifactId>
@@ -58,6 +69,12 @@
 		<version>2.0.1</version>
 		<scope>compile</scope>
 	</dependency>
+	
+	<dependency>
+        <groupId>net.infonode</groupId>
+        <artifactId>docking</artifactId>
+        <version>1.6.1</version>
+    </dependency>
     
   </dependencies>
   
