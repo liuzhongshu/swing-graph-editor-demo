@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -60,12 +61,12 @@ public class Editor {
 	private void createRootWindow() {
 		// Create the views
 		for (int i = 0; i < PALETTE_SIZE; i++) {
-			paletteViews[i] = new View("View " + i, null, createViewComponent("View " + i));
+			paletteViews[i] = new View("Palette " + i, null, createViewComponent("Palette " + i));
 			viewMap.addView(i, paletteViews[i]);
 		}
 
 		jungPanel = new JungPanel();
-		jungView = new View("Jung", null, jungPanel);
+		jungView = new View("Graph", null, jungPanel);
 		propertyView = new View("Properties", null, createViewComponent("Property"));
 
 		rootWindow = DockingUtil.createRootWindow(viewMap, null, true);
@@ -94,6 +95,7 @@ public class Editor {
 
 		JButton btnEditMode = new JButton("");
 		btnEditMode.setIcon(new ImageIcon(Editor.class.getResource("/edit.png")));
+		btnEditMode.setToolTipText("Edit Mode");
 		btnEditMode.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				jungPanel.setEditMode();
@@ -103,6 +105,7 @@ public class Editor {
 		
 		JButton btnPickMode = new JButton("");
 		btnPickMode.setIcon(new ImageIcon(Editor.class.getResource("/select.png")));
+		btnPickMode.setToolTipText("Pick Mode");
 		btnPickMode.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				jungPanel.setPickMode();
@@ -126,18 +129,23 @@ public class Editor {
 		JMenu fileMenu = new JMenu("File");
 		fileMenu.add("New").addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				jungPanel.newGraph();
 			}
 		});
 
 		fileMenu.add("Open").addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				jungPanel.loadGraph("1.graphml");
+				JFileChooser chooser = new JFileChooser();
+				if (chooser.showOpenDialog(null) != JFileChooser.CANCEL_OPTION)
+					jungPanel.loadGraph(chooser.getSelectedFile().getAbsolutePath());
 			}
 		});
 
 		fileMenu.add("Save").addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				jungPanel.saveGraph("1.graphml");
+				JFileChooser chooser = new JFileChooser();
+				if (chooser.showSaveDialog(null) != JFileChooser.CANCEL_OPTION)
+					jungPanel.saveGraph(chooser.getSelectedFile().getAbsolutePath());
 			}
 		});
 

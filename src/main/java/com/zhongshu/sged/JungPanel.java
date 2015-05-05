@@ -61,8 +61,7 @@ public class JungPanel extends JPanel{
         
     	setLayout(new BorderLayout(0, 0));
     	
-        // create a simple graph for the demo
-        graph = new SparseMultigraph<Number,Number>();
+    	graph = new SparseMultigraph<Number,Number>();
 
         //layout = new StaticLayout<Number,Number>(graph,new Dimension(600,600));
         layout = new PersistentLayoutImpl<Number,Number>(new FRLayout<Number,Number>(graph));
@@ -88,9 +87,13 @@ public class JungPanel extends JPanel{
 
         graphMouse.setMode(ModalGraphMouse.Mode.EDITING);
 
-
     }
-
+    
+    public void newGraph() {
+        graph = new SparseMultigraph<Number,Number>();
+        layout.setGraph(graph);
+        vv.repaint();
+    }
     
     public void writeJPEGImage(File file) {
         int width = vv.getWidth();
@@ -127,11 +130,13 @@ public class JungPanel extends JPanel{
     
     public void loadGraph(String filename) {
     	try {
-			gmlr.load(filename, graph);
-    		//layout.restore(filename);
+    		Graph<Number,Number> newGraph = new SparseMultigraph<Number,Number>();
+			gmlr.load(filename, newGraph);
+			graph = newGraph;
+			layout.setGraph(graph);
+    		//layout.restore(filename);			
     		vv.repaint();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
     }
