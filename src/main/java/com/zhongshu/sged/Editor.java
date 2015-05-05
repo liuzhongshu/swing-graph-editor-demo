@@ -93,7 +93,7 @@ public class Editor {
 		JToolBar toolBar = new JToolBar();
 
 		JButton btnEditMode = new JButton("");
-		btnEditMode.setIcon(new ImageIcon(Editor.class.getResource("/net/infonode/docking/theme/internal/resource/xp/button_maximize_normal.png")));
+		btnEditMode.setIcon(new ImageIcon(Editor.class.getResource("/edit.png")));
 		btnEditMode.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				jungPanel.setEditMode();
@@ -102,7 +102,7 @@ public class Editor {
 		toolBar.add(btnEditMode);
 		
 		JButton btnPickMode = new JButton("");
-		btnPickMode.setIcon(new ImageIcon(Editor.class.getResource("/net/infonode/tabbedpanel/theme/internal/resource/xp/button_dropdown_normal.png")));
+		btnPickMode.setIcon(new ImageIcon(Editor.class.getResource("/select.png")));
 		btnPickMode.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				jungPanel.setPickMode();
