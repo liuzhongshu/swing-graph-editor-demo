@@ -6,6 +6,8 @@ import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.HashMap;
 
 import javax.imageio.ImageIO;
@@ -16,14 +18,19 @@ import org.apache.commons.collections15.functors.MapTransformer;
 import org.apache.commons.collections15.map.LazyMap;
 
 import edu.uci.ics.jung.algorithms.layout.AbstractLayout;
+import edu.uci.ics.jung.algorithms.layout.FRLayout;
 import edu.uci.ics.jung.algorithms.layout.StaticLayout;
 import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.graph.SparseMultigraph;
+import edu.uci.ics.jung.io.GraphMLReader;
+import edu.uci.ics.jung.io.GraphMLWriter;
 import edu.uci.ics.jung.visualization.GraphZoomScrollPane;
 import edu.uci.ics.jung.visualization.VisualizationViewer;
 import edu.uci.ics.jung.visualization.control.EditingModalGraphMouse;
 import edu.uci.ics.jung.visualization.control.ModalGraphMouse;
 import edu.uci.ics.jung.visualization.decorators.ToStringLabeller;
+import edu.uci.ics.jung.visualization.layout.PersistentLayout;
+import edu.uci.ics.jung.visualization.layout.PersistentLayoutImpl;
 
 
 public class JungPanel extends JPanel{
@@ -31,10 +38,11 @@ public class JungPanel extends JPanel{
 
 	private static final long serialVersionUID = -2023243689258876709L;
 
-
+	GraphMLReader<Graph<Number,Number>, Number, Number> gmlr;
+	GraphMLWriter<Number, Number> gmlw;
     Graph<Number,Number> graph;
     
-    AbstractLayout<Number,Number> layout;
+    PersistentLayout<Number,Number> layout;
 
     VisualizationViewer<Number,Number> vv;
     
@@ -42,13 +50,22 @@ public class JungPanel extends JPanel{
     
 
     public JungPanel() {
+        Factory<Number> vertexFactory = new VertexFactory();
+        Factory<Number> edgeFactory = new EdgeFactory();
+        try {
+			gmlr = new GraphMLReader<Graph<Number,Number>, Number, Number>(vertexFactory, edgeFactory);
+			gmlw = new GraphMLWriter<Number, Number>();
+		
+		} catch (Exception e) {
+		}
+        
     	setLayout(new BorderLayout(0, 0));
     	
         // create a simple graph for the demo
         graph = new SparseMultigraph<Number,Number>();
 
-        layout = new StaticLayout<Number,Number>(graph,new Dimension(600,600));
-        
+        //layout = new StaticLayout<Number,Number>(graph,new Dimension(600,600));
+        layout = new PersistentLayoutImpl<Number,Number>(new FRLayout<Number,Number>(graph));
         vv =  new VisualizationViewer<Number,Number>(layout);
         vv.setBackground(Color.white);
 
@@ -63,8 +80,7 @@ public class JungPanel extends JPanel{
 
         final GraphZoomScrollPane panel = new GraphZoomScrollPane(vv);
         this.add(panel);
-        Factory<Number> vertexFactory = new VertexFactory();
-        Factory<Number> edgeFactory = new EdgeFactory();
+
         
         graphMouse = new EditingModalGraphMouse<Number,Number>(vv.getRenderContext(), vertexFactory, edgeFactory);
         vv.setGraphMouse(graphMouse);
@@ -109,7 +125,26 @@ public class JungPanel extends JPanel{
     	graphMouse.setMode(ModalGraphMouse.Mode.ANNOTATING);
     }
     
-
+    public void loadGraph(String filename) {
+    	try {
+			gmlr.load(filename, graph);
+    		//layout.restore(filename);
+    		vv.repaint();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    }
+    
+    public void saveGraph(String saveFile) {
+    	try {
+    		//layout.persist(saveFile);
+			gmlw.save(graph, new FileWriter(saveFile));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    }
     
     class VertexFactory implements Factory<Number> {
 

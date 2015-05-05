@@ -131,11 +131,13 @@ public class Editor {
 
 		fileMenu.add("Open").addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				jungPanel.loadGraph("1.graphml");
 			}
 		});
 
 		fileMenu.add("Save").addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				jungPanel.saveGraph("1.graphml");
 			}
 		});
 
